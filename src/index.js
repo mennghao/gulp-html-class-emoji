@@ -1,5 +1,7 @@
 var gutil = require('gulp-util');
 var through = require('through2');
+var fs = require('fs');
+var path = process.cwd();
 var PluginError = gutil.PluginError;
 
 var emoji = require('./emoji.js').getEmojiMap();
@@ -7,6 +9,8 @@ var reg = /class="(.*?)"/ig;
 var reg_ex = /["'](.*)["']/ig;
 
 function replace(str){
+	saveMap();
+
 	return str.replace(reg, function($1){
 
 		var info = $1.replace(reg_ex, function($2){
@@ -19,6 +23,17 @@ function replace(str){
 		});
 
 		return info;
+	});
+};
+
+
+function saveMap(){
+	var data = JSON.stringify(emoji);
+	
+	fs.writeFile(path + '/emoji.json', data,function(error){
+		if(error){
+			throw error;
+		}
 	});
 }
 
